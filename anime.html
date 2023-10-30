@@ -36,6 +36,7 @@
 <h2>Anime List</h2>
 
 <form id="animeForm">
+    <input type="hidden" id="animeId">
     <label for="animeName">Name:</label>
     <input type="text" id="animeName" required>
 
@@ -45,7 +46,7 @@
     <label for="episodeCount">Episodes:</label>
     <input type="number" id="episodeCount" required>
 
-    <button type="button" onclick="addAnime()">Add Anime</button>
+    <button type="button" onclick="addOrUpdateAnime()">Add / Update Anime</button>
 </form>
 
 <table id="animeTable">
@@ -66,26 +67,44 @@
 <script>
     let animeList = [];
 
-    function addAnime() {
+    function addOrUpdateAnime() {
+        const id = document.getElementById('animeId').value;
         const name = document.getElementById('animeName').value;
         const genre = document.getElementById('animeGenre').value;
         const episodes = document.getElementById('episodeCount').value;
 
-        const anime = {
-            id: animeList.length + 1,
-            name: name,
-            genre: genre,
-            episodes: episodes
-        };
+        if (id) {
+            // Update existing anime
+            const index = animeList.findIndex(anime => anime.id === parseInt(id));
+            animeList[index] = { id: parseInt(id), name, genre, episodes };
+        } else {
+            // Add new anime
+            const anime = {
+                id: animeList.length + 1,
+                name: name,
+                genre: genre,
+                episodes: episodes
+            };
 
-        animeList.push(anime);
+            animeList.push(anime);
+        }
+
         displayAnimeList();
         resetForm();
+    }
+
+    function editAnime(id) {
+        const anime = animeList.find(anime => anime.id === id);
+        document.getElementById('animeId').value = anime.id;
+        document.getElementById('animeName').value = anime.name;
+        document.getElementById('animeGenre').value = anime.genre;
+        document.getElementById('episodeCount').value = anime.episodes;
     }
 
     function deleteAnime(id) {
         animeList = animeList.filter(anime => anime.id !== id);
         displayAnimeList();
+        resetForm();
     }
 
     function displayAnimeList() {
@@ -98,7 +117,10 @@
                             <td>${anime.name}</td>
                             <td>${anime.genre}</td>
                             <td>${anime.episodes}</td>
-                            <td><button onclick="deleteAnime(${anime.id})">Delete</button></td>
+                            <td>
+                                <button onclick="editAnime(${anime.id})">Edit</button>
+                                <button onclick="deleteAnime(${anime.id})">Delete</button>
+                            </td>
                         </tr>`;
             tableBody.innerHTML += row;
         });
@@ -106,6 +128,7 @@
 
     function resetForm() {
         document.getElementById('animeForm').reset();
+        document.getElementById('animeId').value = '';
     }
 </script>
 
