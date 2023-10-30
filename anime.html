@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anime CRUD</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        form {
+            max-width: 400px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Anime List</h2>
+
+<form id="animeForm">
+    <label for="animeName">Name:</label>
+    <input type="text" id="animeName" required>
+
+    <label for="animeGenre">Genre:</label>
+    <input type="text" id="animeGenre" required>
+
+    <label for="episodeCount">Episodes:</label>
+    <input type="number" id="episodeCount" required>
+
+    <button type="button" onclick="addAnime()">Add Anime</button>
+</form>
+
+<table id="animeTable">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Genre</th>
+            <th>Episodes</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Anime entries will be added here dynamically -->
+    </tbody>
+</table>
+
+<script>
+    let animeList = [];
+
+    function addAnime() {
+        const name = document.getElementById('animeName').value;
+        const genre = document.getElementById('animeGenre').value;
+        const episodes = document.getElementById('episodeCount').value;
+
+        const anime = {
+            id: animeList.length + 1,
+            name: name,
+            genre: genre,
+            episodes: episodes
+        };
+
+        animeList.push(anime);
+        displayAnimeList();
+        resetForm();
+    }
+
+    function deleteAnime(id) {
+        animeList = animeList.filter(anime => anime.id !== id);
+        displayAnimeList();
+    }
+
+    function displayAnimeList() {
+        const tableBody = document.querySelector('#animeTable tbody');
+        tableBody.innerHTML = '';
+
+        animeList.forEach(anime => {
+            const row = `<tr>
+                            <td>${anime.id}</td>
+                            <td>${anime.name}</td>
+                            <td>${anime.genre}</td>
+                            <td>${anime.episodes}</td>
+                            <td><button onclick="deleteAnime(${anime.id})">Delete</button></td>
+                        </tr>`;
+            tableBody.innerHTML += row;
+        });
+    }
+
+    function resetForm() {
+        document.getElementById('animeForm').reset();
+    }
+</script>
+
+</body>
+</html>
